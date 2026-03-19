@@ -1,9 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
-public class Dialogue 
+public class Dialogue
 {
-
-    public string[] sentences;
-    public string names;
+    public DialogueLine[] lines;
 }

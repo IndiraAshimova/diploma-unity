@@ -12,9 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e51c2955335b6c8448e0c770d304ab62, type: 3}
   m_Name: 2.2.2
   m_EditorClassIdentifier: 
-  lessonName: Bayan Sulu
+  lessonName: Girl Zhibek and Tolegen
   category: 1
   thumbnail: {fileID: 0}
-  lessonIndex: 0
-  sceneName: Bayan Sulu
-  lessonQuestions: []
+  lessonIndex: 2
+  sceneName: Girl_Zhibek_and_Tolegen
+  lessonQuestions:
+  - {fileID: 11400000, guid: 91220e3c758692c4fba64ff56ab27249, type: 2}
+  - {fileID: 11400000, guid: 8802c8e04e4927743881898563de0ce7, type: 2}
+  - {fileID: 11400000, guid: 62bf41e7724ff9347826a1118aceb421, type: 2}
+  - {fileID: 11400000, guid: e98258b025d60fd40a38b99f0221dd52, type: 2}
+  - {fileID: 11400000, guid: 4d6d0a3901f0eb84b8de4232a62fc300, type: 2}

@@ -1982,6 +1982,7 @@ MonoBehaviour:
   playerName: 
   xp: 0
   level: 0
+  streak: 0
 --- !u!1 &525372325
 GameObject:
   m_ObjectHideFlags: 0
@@ -3911,7 +3912,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   emailInput: {fileID: 862841357}
   passwordInput: {fileID: 1922769828}
-  usernameInput: {fileID: 1938740777}
   emailInputR: {fileID: 1938740777}
   passwordInputR: {fileID: 1140579505}
   usernameInputR: {fileID: 1866551407}
@@ -3963,7 +3963,6 @@ RectTransform:
   m_Children:
   - {fileID: 149021852}
   - {fileID: 1247484759}
-  - {fileID: 1795956781}
   - {fileID: 862841356}
   - {fileID: 1922769827}
   - {fileID: 1908027197}
@@ -4458,11 +4457,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1581601956}
+  m_Father: {fileID: 1966729360}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -19.19342, y: 177.1742}
+  m_AnchoredPosition: {x: 429.80664, y: 177.11615}
   m_SizeDelta: {x: 376.2668, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1795956782
@@ -5948,6 +5947,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1787078764}
+  - {fileID: 1795956781}
   - {fileID: 1581601956}
   - {fileID: 1308516600}
   - {fileID: 1341875235}

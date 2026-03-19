@@ -6,6 +6,8 @@ using System.Collections;
 
 public class FinishUI : MonoBehaviour
 {
+    public System.Action onFinishClosed;
+
     [Header("UI Elements")]
     [SerializeField] private GameObject finishWindow;
     [SerializeField] private TMP_Text scoreText;
@@ -46,6 +48,7 @@ public class FinishUI : MonoBehaviour
             Debug.LogWarning("XPService не назначен на FinishUI!");
         }
 
-        SceneManager.LoadScene("Main_Menu");
+        onFinishClosed?.Invoke();
+
     }
 }

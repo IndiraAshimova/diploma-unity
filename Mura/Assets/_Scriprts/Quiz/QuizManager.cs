@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class QuizManager : MonoBehaviour
 {
+    public System.Action onQuizFinished;
+
     private Question[] _questions = null;
     public Question[] Questions { get { return _questions; } }
 
@@ -104,10 +106,15 @@ public class QuizManager : MonoBehaviour
         else
         {
             Debug.Log("Quiz Finished!");
+
+            // Показываем FinishUI
             if (finishUI != null)
             {
                 finishUI.Show(events.CurrentFinalScore);
             }
+
+            // Важно: уведомляем LessonFlowManager через QuizStep
+            onQuizFinished?.Invoke();
         }
     }
 
@@ -163,5 +170,10 @@ public class QuizManager : MonoBehaviour
     {
         events.CurrentFinalScore = 0;
         events.ScoreUpdated?.Invoke();
+    }
+
+    public void CloseQuizWindow()
+    {
+        quizWindow.SetActive(false);
     }
 }

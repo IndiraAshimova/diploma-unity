@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Lessons/Er-Tostik.unity
     guid: b59f24425bff05248b4474272a177ef5
+  - enabled: 1
+    path: Assets/Scenes/Lessons/Girl_Zhibek_and_Tolegen.unity
+    guid: bdb15e24d0751314e88aab150428a28a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
