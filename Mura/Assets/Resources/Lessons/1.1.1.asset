@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lessonName: Er-Tostik
   category: 0
-  thumbnail: {fileID: 0}
   lessonIndex: 0
   sceneName: Er-Tostik
+  winScore: 30
+  partialScore: 20
   lessonQuestions:
   - {fileID: 11400000, guid: a54690e837c1d274cb1364ba929dcbbc, type: 2}
   - {fileID: 11400000, guid: 0a2a8a7a092b5f1459e1cdbc1fadc5ba, type: 2}
   - {fileID: 11400000, guid: 8c37f8a7e2f784c49bd32a46c03bdaac, type: 2}
   - {fileID: 11400000, guid: b174ed59bbf2d114988378c54fd666a9, type: 2}
-  - {fileID: 11400000, guid: 8f31b97cd281dcf429591efc72d3ee1e, type: 2}
   - {fileID: 11400000, guid: e3bb966f586a77b4fabdea3dfdcad38f, type: 2}

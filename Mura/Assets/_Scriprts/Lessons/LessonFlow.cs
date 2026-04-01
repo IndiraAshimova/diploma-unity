@@ -3,38 +3,72 @@ using UnityEngine;
 
 public class LessonFlowManager : MonoBehaviour
 {
-    private Queue<ILessonStep> steps = new Queue<ILessonStep>();
+    public static LessonFlowManager Instance;
 
-    public void StartLesson(List<ILessonStep> lessonSteps)
+    public LessonProgress Progress = new LessonProgress();
+
+    private Queue<ILessonStep> steps = new Queue<ILessonStep>();
+    private bool isRunning = false;
+
+    // ? здесь хранится текущий урок
+    public LessonSO CurrentLessonSO { get; private set; }
+
+    private void Awake()
     {
+        Instance = this;
+    }
+
+    // Запуск урока
+    public void StartLesson(
+        List<ILessonStep> lessonSteps,
+        LessonSO lessonSO = null,
+        bool skipCompleted = true)
+    {
+        if (isRunning)
+        {
+            Debug.Log("[LessonFlow] Уже выполняется урок!");
+            return;
+        }
+
+        CurrentLessonSO = lessonSO;
+
         steps.Clear();
 
         foreach (var step in lessonSteps)
-            steps.Enqueue(step);
+        {
+            if (skipCompleted &&
+                step is ITrackableStep trackable &&
+                trackable.IsCompleted(Progress))
+                continue;
 
+            steps.Enqueue(step);
+        }
+        isRunning = true;
         RunNextStep();
     }
 
-    void RunNextStep()
+    private void RunNextStep()
     {
         if (steps.Count == 0)
         {
-            Debug.Log("Lesson finished");
+            Debug.Log("[LessonFlow] Lesson finished");
+            isRunning = false;
             return;
         }
 
         ILessonStep step = steps.Dequeue();
+        step.Execute(RunNextStep);
+    }
 
-        if (step == null)
-        {
-            Debug.LogError("STEP IS NULL ?");
-            RunNextStep();
-            return;
-        }
+    public void StartLessonForce(
+        List<ILessonStep> lessonSteps,
+        LessonSO lessonSO = null,
+        bool skipCompleted = false)
+    {
+        Debug.Log("[LessonFlow] Принудительный запуск");
+        steps.Clear();
+        isRunning = false;
 
-        step.Execute(() =>
-        {
-            RunNextStep();
-        });
+        StartLesson(lessonSteps, lessonSO, skipCompleted);
     }
 }

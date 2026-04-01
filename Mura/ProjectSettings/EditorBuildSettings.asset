@@ -23,6 +23,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Lessons/Girl_Zhibek_and_Tolegen.unity
     guid: bdb15e24d0751314e88aab150428a28a
+  - enabled: 1
+    path: Assets/Scenes/Lessons/Oyan_Kazakh.unity
+    guid: 9b891c2813b2e6b40ac72780fee0a98a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

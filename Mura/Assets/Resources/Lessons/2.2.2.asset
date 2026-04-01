@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lessonName: Girl Zhibek and Tolegen
   category: 1
-  thumbnail: {fileID: 0}
   lessonIndex: 2
   sceneName: Girl_Zhibek_and_Tolegen
+  winScore: 40
+  partialScore: 10
   lessonQuestions:
   - {fileID: 11400000, guid: 91220e3c758692c4fba64ff56ab27249, type: 2}
   - {fileID: 11400000, guid: 8802c8e04e4927743881898563de0ce7, type: 2}

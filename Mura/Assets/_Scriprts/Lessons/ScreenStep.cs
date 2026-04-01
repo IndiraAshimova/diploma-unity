@@ -9,9 +9,13 @@ public class ScreenStep : MonoBehaviour, ILessonStep
     {
         if (screenToHide != null)
             screenToHide.SetActive(false);
+        else
+            Debug.LogWarning("ScreenStep: screenToHide не назначен!");
 
         if (screenToShow != null)
             screenToShow.SetActive(true);
+        else
+            Debug.LogWarning("ScreenStep: screenToShow не назначен!");
 
         onComplete?.Invoke();
     }

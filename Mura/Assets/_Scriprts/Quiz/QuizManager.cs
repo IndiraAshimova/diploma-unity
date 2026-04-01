@@ -1,178 +1,176 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class QuizManager : MonoBehaviour
 {
+    [SerializeField] private LevelScoreManager levelScore;
     public System.Action onQuizFinished;
 
-    private Question[] _questions = null;
-    public Question[] Questions { get { return _questions; } }
-
-    [SerializeField] GameEvents events = null;
+    [SerializeField] private GameEvents events = null;
     [SerializeField] private GameObject quizWindow;
-    [SerializeField] public FinishUI finishUI = null;
 
     [Header("Сервисы")]
-    [SerializeField] private XPService xpService; // теперь назначаем через инспектор
+    [SerializeField] private XPService xpService;
 
-    private List<AnswerData> PickedAnswers = new List<AnswerData>();
-    private List<int> FinishedQuestions = new List<int>();
-    private int currentQuestion = 0;
+    [Header("Настройки")]
+    [SerializeField] private bool useRandomOrder = true;
+
     [SerializeField] private LessonSO currentLesson;
 
-    private bool IsFinished => FinishedQuestions.Count >= Questions.Length;
+    private Question[] _questions = null;
+    private List<AnswerData> PickedAnswers = new List<AnswerData>();
+    private List<int> FinishedQuestions = new List<int>();
 
-    void OnEnable()
+    private int currentQuestion = -1;
+    private List<int> questionOrder = new List<int>();
+
+    private bool IsFinished => FinishedQuestions.Count >= Questions.Length;
+    public Question[] Questions => _questions;
+
+    private void OnEnable()
     {
         events.UpdateQuestionAnswer += UpdateAnswers;
     }
-    void OnDisable()
+
+    private void OnDisable()
     {
         events.UpdateQuestionAnswer -= UpdateAnswers;
     }
-
     public void StartQuiz()
     {
-        quizWindow.SetActive(true);
+        events.CurrentFinalScore = 0;
+
         FinishedQuestions.Clear();
         PickedAnswers.Clear();
-        ResetScore();
-        _questions = currentLesson.LessonQuestions.ToArray();
-        var seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
-        UnityEngine.Random.InitState(seed);
+        currentQuestion = -1;
+        questionOrder.Clear();
 
-        Display();
+        _questions = currentLesson.LessonQuestions.ToArray();
+
+        // Заполняем порядок вопросов
+        for (int i = 0; i < _questions.Length; i++)
+            questionOrder.Add(i);
+
+        int maxScore = _questions.Sum(q => q.AddScore);
+        levelScore?.AddMaxScore(maxScore);
+
+        ShowQuiz();
+        DisplayNextQuestion();
     }
 
     public void UpdateAnswers(AnswerData newAnswer)
     {
-        if (Questions[currentQuestion].GetAnswerType == Question.AnswerType.Single)
+        var currentQ = Questions[currentQuestion];
+
+        if (currentQ.GetAnswerType == Question.AnswerType.Single)
         {
             foreach (var answer in PickedAnswers)
             {
                 if (answer != newAnswer)
-                {
                     answer.Reset();
-                }
             }
+
             PickedAnswers.Clear();
             PickedAnswers.Add(newAnswer);
         }
         else
         {
             bool alreadyPicked = PickedAnswers.Exists(x => x == newAnswer);
+
             if (alreadyPicked)
-            {
                 PickedAnswers.Remove(newAnswer);
-            }
             else
-            {
                 PickedAnswers.Add(newAnswer);
-            }
         }
     }
 
-    public void EraseAnswers()
+    private void DisplayNextQuestion()
     {
-        PickedAnswers = new List<AnswerData>();
+        PickedAnswers.Clear();
+
+        if (IsFinished)
+        {
+            Debug.Log("[Quiz] Quiz Finished!");
+
+            onQuizFinished?.Invoke();
+
+            return;
+        }
+
+        var question = GetNextQuestion();
+
+        events.UpdateQuestionUI?.Invoke(question);
     }
 
-    void Display()
+    private Question GetNextQuestion()
     {
-        EraseAnswers();
-        var question = GetRandomQuestion();
+        if (useRandomOrder)
+        {
+            int randomIndex =
+                UnityEngine.Random.Range(0, questionOrder.Count);
 
-        if (events.UpdateQuestionUI != null)
-            events.UpdateQuestionUI(question);
+            currentQuestion = questionOrder[randomIndex];
+            questionOrder.RemoveAt(randomIndex);
+        }
         else
-            Debug.LogWarning("GameEvents.UpdateQuestionUI is null!");
+        {
+            currentQuestion++;
+        }
+
+        return _questions[currentQuestion];
     }
 
     public void Accept()
     {
         bool isCorrect = CheckAnswers();
+
         FinishedQuestions.Add(currentQuestion);
 
-        UpdateScore((isCorrect) ? Questions[currentQuestion].AddScore : 0);
+        int addScore =
+            isCorrect ? Questions[currentQuestion].AddScore : 0;
 
-        if (!IsFinished)
-        {
-            Display();
-        }
-        else
-        {
-            Debug.Log("Quiz Finished!");
+        UpdateScore(addScore);
 
-            // Показываем FinishUI
-            if (finishUI != null)
-            {
-                finishUI.Show(events.CurrentFinalScore);
-            }
-
-            // Важно: уведомляем LessonFlowManager через QuizStep
-            onQuizFinished?.Invoke();
-        }
+        DisplayNextQuestion();
     }
 
-    bool CheckAnswers() => CompairAnswers();
-
-    bool CompairAnswers()
+    private bool CheckAnswers()
     {
-        if (PickedAnswers.Count > 0)
-        {
-            List<int> correctAns = Questions[currentQuestion].GetCorrectAnswers();
-            List<int> pickedAns = PickedAnswers.Select(x => x.AnswerIndex).ToList();
+        if (PickedAnswers.Count == 0)
+            return false;
 
-            return !correctAns.Except(pickedAns).Any() && !pickedAns.Except(correctAns).Any();
-        }
-        return false;
-    }
+        List<int> correctAns =
+            Questions[currentQuestion].GetCorrectAnswers();
 
-    Question GetRandomQuestion()
-    {
-        currentQuestion = GetRandomQuestionIndex();
-        return Questions[currentQuestion];
-    }
+        List<int> pickedAns =
+            PickedAnswers.Select(x => x.AnswerIndex).ToList();
 
-    int GetRandomQuestionIndex()
-    {
-        if (FinishedQuestions.Count >= Questions.Length) return 0;
-
-        int random;
-        do
-        {
-            random = UnityEngine.Random.Range(0, Questions.Length);
-        } while (FinishedQuestions.Contains(random) || random == currentQuestion);
-
-        return random;
+        return !correctAns.Except(pickedAns).Any()
+            && !pickedAns.Except(correctAns).Any();
     }
 
     private void UpdateScore(int add)
     {
+        if (levelScore != null)
+            levelScore.AddScore(add);
+
         events.CurrentFinalScore += add;
-        events.ScoreUpdated?.Invoke();
-
-        if (xpService != null)
-        {
-            StartCoroutine(xpService.AddXP(add));
-        }
-        else
-        {
-            Debug.LogWarning("XPService не назначен на QuizManager!");
-        }
-    }
-
-    public void ResetScore()
-    {
-        events.CurrentFinalScore = 0;
-        events.ScoreUpdated?.Invoke();
+        events.ScoreUpdated?.Invoke();;
     }
 
     public void CloseQuizWindow()
+    {
+        quizWindow.SetActive(false);
+    }
+
+    public void ShowQuiz()
+    {
+        quizWindow.SetActive(true);
+    }
+
+    public void HideQuiz()
     {
         quizWindow.SetActive(false);
     }

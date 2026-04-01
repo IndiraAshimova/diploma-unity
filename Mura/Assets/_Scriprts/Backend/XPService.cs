@@ -1,10 +1,17 @@
-using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine;
 using System.Collections;
 
 public class XPService : MonoBehaviour
 {
+    public static XPService Instance;
+
     private string xpUrl = APIConfig.XP_ADD;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public IEnumerator AddXP(int amount, System.Action<int, int> onXPUpdated = null)
     {
@@ -23,10 +30,20 @@ public class XPService : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            XPResponse response = JsonUtility.FromJson<XPResponse>(request.downloadHandler.text);
-            PlayerModel.Instance.UpdateXP(response.xp, response.level);
-            onXPUpdated?.Invoke(response.xp, response.level);
-            Debug.Log($"XP успешно обновлён: +{amount} | XP={response.xp} Level={response.level}");
+            XPResponse response =
+                JsonUtility.FromJson<XPResponse>(request.downloadHandler.text);
+
+            PlayerModel.Instance.UpdateXP(
+                response.xp,
+                response.level
+            );
+
+            onXPUpdated?.Invoke(
+                response.xp,
+                response.level
+            );
+
+            Debug.Log($"XP успешно обновлён: +{amount}");
         }
         else
         {

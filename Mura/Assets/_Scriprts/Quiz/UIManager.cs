@@ -23,10 +23,9 @@ public struct UIElements
     [SerializeField] private TextMeshProUGUI scoreText;
     public TextMeshProUGUI ScoreText => scoreText;
 
+    [Header("Open Answer")]
     [SerializeField] private OpenAnswerData openAnswerPrefab;
     public OpenAnswerData OpenAnswerPrefab => openAnswerPrefab;
-
-    private OpenAnswerData currentOpenAnswer;
 
     [Space]
 
@@ -50,7 +49,8 @@ public class UIManager : MonoBehaviour
 
     private OpenAnswerData currentOpenAnswer;
 
-    private List<AnswerData> currentAnswers = new List<AnswerData>();
+    private List<AnswerData> currentAnswers =
+        new List<AnswerData>();
 
     private void OnEnable()
     {
@@ -71,7 +71,9 @@ public class UIManager : MonoBehaviour
 
     private void UpdateQuestionUI(Question question)
     {
-        uIElements.QuestionInfoTextObject.text = question.Info;
+        uIElements.QuestionInfoTextObject.text =
+            question.Info;
+
         CreateAnswers(question);
     }
 
@@ -79,36 +81,133 @@ public class UIManager : MonoBehaviour
     {
         EraseAnswers();
 
-        float offset = -parameters.Margins;
+        RectTransform area =
+            uIElements.AnswersContentArea;
 
-        if (question.GetAnswerType == Question.AnswerType.Open)
+        float margin =
+            parameters.Margins;
+
+        // ?? Если открытый вопрос
+        if (question.GetAnswerType ==
+            Question.AnswerType.Open)
         {
-            currentOpenAnswer = Instantiate(
-                uIElements.OpenAnswerPrefab,
-                uIElements.AnswersContentArea
-            );
+            currentOpenAnswer =
+                Instantiate(
+                    uIElements.OpenAnswerPrefab,
+                    area
+                );
+
+            RectTransform rect =
+                currentOpenAnswer
+                .GetComponent<RectTransform>();
+
+            // Растягиваем на всю область (как у тебя сейчас)
+            rect.anchorMin =
+                new Vector2(0f, 0f);
+
+            rect.anchorMax =
+                new Vector2(1f, 1f);
+
+            rect.offsetMin =
+                new Vector2(margin, margin);
+
+            rect.offsetMax =
+                new Vector2(-margin, -margin);
 
             return;
         }
 
+        // ?? Размер области
+        float areaWidth =
+            area.rect.width;
 
-        for (int i = 0; i < question.Answers.Length; i++)
+        float areaHeight =
+            area.rect.height;
+
+        float sideX =
+            areaWidth / 4f;
+
+        int total =
+            question.Answers.Length;
+
+        for (int i = 0; i < total; i++)
         {
-            AnswerData newAnswer = Instantiate(answerPrefab, uIElements.AnswersContentArea);
-            newAnswer.UpdateData(question.Answers[i].Info, i);
-
-            newAnswer.Rect.anchoredPosition = new Vector2(0, offset);
-
-            offset -= (newAnswer.Rect.sizeDelta.y + parameters.Margins);
-
-            uIElements.AnswersContentArea.sizeDelta =
-                new Vector2(
-                    uIElements.AnswersContentArea.sizeDelta.x,
-                    -offset
+            AnswerData newAnswer =
+                Instantiate(
+                    answerPrefab,
+                    area
                 );
+
+            newAnswer.UpdateData(
+                question.Answers[i].Info,
+                i
+            );
+
+            RectTransform rect =
+                newAnswer.Rect;
+
+            int row = i / 2;
+            int column = i % 2;
+
+            float rectHeight =
+                rect.sizeDelta.y;
+
+            // ?? Начинаем сверху
+            float startY =
+                areaHeight / 2f
+                - rectHeight / 2f
+                - margin;
+
+            float yPos =
+                startY
+                - row *
+                (rectHeight + margin);
+
+            float xPos;
+
+            bool isLastOdd =
+                (total % 2 != 0)
+                && (i == total - 1);
+
+            if (isLastOdd)
+            {
+                // последний по центру
+                xPos = 0f;
+            }
+            else
+            {
+                // левая / правая колонка
+                xPos =
+                    (column == 0)
+                    ? -sideX
+                    : sideX;
+            }
+
+            rect.anchoredPosition =
+                new Vector2(xPos, yPos);
 
             currentAnswers.Add(newAnswer);
         }
+    }
+
+    private void CreateOpenAnswer()
+    {
+        RectTransform area =
+            uIElements.AnswersContentArea;
+
+        currentOpenAnswer =
+            Instantiate(
+                uIElements.OpenAnswerPrefab,
+                area
+            );
+
+        RectTransform rect =
+            currentOpenAnswer
+            .GetComponent<RectTransform>();
+
+        // Центрируем InputField
+        rect.anchoredPosition =
+            Vector2.zero;
     }
 
     private void EraseAnswers()
@@ -129,6 +228,17 @@ public class UIManager : MonoBehaviour
 
     private void UpdateScoreUI()
     {
-        uIElements.ScoreText.text = "Score: " + events.CurrentFinalScore;
+        uIElements.ScoreText.text =
+            "Score: " +
+            events.CurrentFinalScore;
+    }
+
+    public string GetOpenAnswerText()
+    {
+        if (currentOpenAnswer == null)
+            return "";
+
+        return currentOpenAnswer
+            .GetInputText();
     }
 }

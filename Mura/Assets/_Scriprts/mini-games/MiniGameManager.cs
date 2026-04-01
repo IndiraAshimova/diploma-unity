@@ -2,20 +2,44 @@ using UnityEngine;
 
 public class MiniGameManager : MonoBehaviour
 {
-    public int totalItems = 4; // сколько нужно правильно собрать
+    public int totalItems = 4;
     private int currentCorrect = 0;
 
     public MiniGameStep step;
 
+    [Header("Очки за мини-игру")]
+    [SerializeField] private int reward = 20;
+
+    [SerializeField] private LevelScoreManager levelScore;
+
+    private void Start()
+    {
+        // регистрируем максимум
+        if (levelScore != null)
+        {
+            levelScore.AddMaxScore(reward);
+        }
+    }
+
     public void RegisterCorrect()
     {
         currentCorrect++;
-        Debug.Log($"Правильно: {currentCorrect}/{totalItems}");
+
+        Debug.Log($"[MiniGame] {currentCorrect}/{totalItems}");
 
         if (currentCorrect >= totalItems)
         {
-            Debug.Log("Мини-игра завершена");
-            step.FinishMiniGame();
+            Debug.Log("[MiniGame] Завершена");
+
+            if (levelScore != null)
+            {
+                levelScore.AddScore(reward);
+            }
+
+            if (step != null)
+            {
+                step.FinishMiniGame();
+            }
         }
     }
 }

@@ -33,13 +33,26 @@ public class LessonButtonData : MonoBehaviour
 
     public void LoadLesson()
     {
-        SceneManager.LoadScene(lessonData.sceneName);
+        LessonContext.CurrentLesson = lessonData;
+
+        SceneManager.LoadScene(
+            lessonData.sceneName);
     }
 
     private void UpdateProgressUI()
     {
-        bool completed = PlayerPrefs.GetInt("Lesson_" + lessonData.lessonIndex, 0) == 1;
+        var progress =
+            LessonProgressManager.Instance
+                .GetLessonProgress(lessonData.lessonIndex);
+
+        bool completed = progress.completed;
 
         completedIcon.sprite = completed ? completedSprite : notCompletedSprite;
+    }
+
+    private void OnEnable()
+    {
+        if (lessonData != null)
+            UpdateProgressUI();
     }
 }

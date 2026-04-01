@@ -1,12 +1,27 @@
+using System;
 using UnityEngine;
 
-public class DialogueStep : MonoBehaviour, ILessonStep
+public class DialogueStep : MonoBehaviour, ILessonStep, ITrackableStep, ICancelableStep
 {
-    public Story story;
+    public DialogueTrigger dialogueTrigger;
 
-    public void Execute(System.Action onComplete)
+    public void Execute(Action onComplete)
     {
-        story.onStoryEnd = onComplete;
-        story.TrigerStory();
+        dialogueTrigger.onDialogueEnd = () =>
+        {
+            MarkCompleted(LessonFlowManager.Instance.Progress);
+            onComplete?.Invoke();
+        };
+
+        dialogueTrigger.gameObject.SetActive(true); // показываем UI
+        dialogueTrigger.TriggerDialogue();
     }
+
+    public void CancelStep()
+    {
+        dialogueTrigger?.gameObject.SetActive(false); // скрываем UI
+    }
+
+    public bool IsCompleted(LessonProgress progress) => progress.dialogueCompleted;
+    public void MarkCompleted(LessonProgress progress) => progress.dialogueCompleted = true;
 }

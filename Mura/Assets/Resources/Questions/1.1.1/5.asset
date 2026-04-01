@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12650b1558e7fc7409fcf331f13d287b, type: 3}
   m_Name: 5
   m_EditorClassIdentifier: 
-  _info: "\u0411\u04B1\u043B \u0435\u0440\u0442\u0435\u0433\u0456\u0434\u0435\u043D
-    \u0430\u043B\u0493\u0430\u043D \u0442\u04AF\u0439\u0456\u043D:(\u0410\u0448\u044B\u049B
-    \u0441\u04B1\u0440\u0430\u049B) "
+  _info: "\u0415\u0440\u0442\u0435\u0433\u0456\u0434\u0435\u043D \u049B\u0430\u043D\u0434\u0430\u0439
+    \u049B\u043E\u0440\u044B\u0442\u044B\u043D\u0434\u044B \u0448\u044B\u0493\u0430\u0440\u0443\u0493\u0430
+    \u0431\u043E\u043B\u0430\u0434\u044B?"
   _answers: []
   _useTimer: 0
   _timer: 0
   _answerType: 2
-  _addScore: 0
+  _addScore: 10
