@@ -7,13 +7,18 @@ public class DialogueStep : MonoBehaviour, ILessonStep, ITrackableStep, ICancela
 
     public void Execute(Action onComplete)
     {
-        dialogueTrigger.onDialogueEnd = () =>
+        dialogueTrigger.onDialogueEnd += () =>
         {
-            MarkCompleted(LessonFlowManager.Instance.Progress);
+            MarkCompleted(
+                LessonFlowManager.Instance.Progress);
+
             onComplete?.Invoke();
+
+            dialogueTrigger.onDialogueEnd = null;
         };
 
-        dialogueTrigger.gameObject.SetActive(true); // показываем UI
+        dialogueTrigger.gameObject.SetActive(true);
+
         dialogueTrigger.TriggerDialogue();
     }
 

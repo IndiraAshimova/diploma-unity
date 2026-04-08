@@ -18,8 +18,15 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private UIMainMenuManager uiManager;
 
     [Header("Services")]
-    [SerializeField] private ProfileService profileService;
-    [SerializeField] private StreakService streakService;
+    private ServiceFactory services;
+
+    private void Awake()
+    {
+        Debug.Log("MainMenuManager Awake");
+
+        services =
+            new ServiceFactory();
+    }
 
     private void OnEnable()
     {
@@ -39,11 +46,10 @@ public class MainMenuManager : MonoBehaviour
             uiManager = GetComponent<UIMainMenuManager>();
         CloseCategory();
 
-        if (profileService != null)
-            StartCoroutine(profileService.GetProfile(OnProfileLoaded));
-
-        if (streakService != null)
-            StartCoroutine(streakService.GetStreak());
+        StartCoroutine(
+            services.Profile.GetProfile(OnProfileLoaded));
+        StartCoroutine(
+            services.Streak.GetStreak());
     }
 
     private void OnProfileLoaded(UserProfileResponse profile)

@@ -1,53 +1,21 @@
-using UnityEngine.Networking;
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
-public class XPService : MonoBehaviour
+public class XPService : BaseApiService, IXPService
 {
-    public static XPService Instance;
+    public XPService(APIConfig config) : base(config) { }
 
-    private string xpUrl = APIConfig.XP_ADD;
-
-    private void Awake()
+    // Теперь принимает callback с XPResponse
+    public IEnumerator AddXP(int amount, System.Action<XPResponse> onSuccess)
     {
-        Instance = this;
-    }
+        XPRequest requestData = new XPRequest { amount = amount };
+        string json = JsonUtility.ToJson(requestData);
 
-    public IEnumerator AddXP(int amount, System.Action<int, int> onXPUpdated = null)
-    {
-        string json = "{\"amount\":" + amount + "}";
-
-        UnityWebRequest request = new UnityWebRequest(xpUrl, "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
-
-        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = new DownloadHandlerBuffer();
-
-        request.SetRequestHeader("Content-Type", "application/json");
-        request.SetRequestHeader("Authorization", "Bearer " + PlayerPrefs.GetString("jwt_token"));
-
-        yield return request.SendWebRequest();
-
-        if (request.result == UnityWebRequest.Result.Success)
+        yield return SendPostRequest(config.XPAdd, json, (responseJson) =>
         {
-            XPResponse response =
-                JsonUtility.FromJson<XPResponse>(request.downloadHandler.text);
-
-            PlayerModel.Instance.UpdateXP(
-                response.xp,
-                response.level
-            );
-
-            onXPUpdated?.Invoke(
-                response.xp,
-                response.level
-            );
-
-            Debug.Log($"XP успешно обновлён: +{amount}");
-        }
-        else
-        {
-            Debug.LogError("Ошибка отправки XP: " + request.error);
-        }
+            XPResponse response = JsonUtility.FromJson<XPResponse>(responseJson);
+            onSuccess?.Invoke(response);
+            Debug.Log($"XPService: Получен ответ с сервера XP={response.xp}, Level={response.level}, Streak={response.streak}");
+        });
     }
 }

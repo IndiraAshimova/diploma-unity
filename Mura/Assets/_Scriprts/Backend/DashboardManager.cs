@@ -11,15 +11,20 @@ public class DashboardManager : MonoBehaviour
     public TMP_Text levelText;
     public TMP_Text streakText;
 
-    [Header("Services")]
-    public ProfileService profileService;
-    public StreakService streakService;
-    public XPService xpService;
+    private ServiceFactory services;
 
     private void OnEnable()
     {
+        Debug.Log("DashboardManager: OnEnable");
+
         if (PlayerModel.Instance != null)
+        {
             PlayerModel.Instance.OnPlayerDataUpdated += UpdateUI;
+        }
+        else
+        {
+            Debug.LogError("PlayerModel.Instance == null");
+        }
     }
 
     private void OnDisable()
@@ -28,34 +33,67 @@ public class DashboardManager : MonoBehaviour
             PlayerModel.Instance.OnPlayerDataUpdated -= UpdateUI;
     }
 
+    private void Awake()
+    {
+        Debug.Log("DashboardManager: Awake");
+
+        services = new ServiceFactory();
+
+        Debug.Log("ServiceFactory создан");
+    }
+
     private void Start()
     {
-        if (profileService != null)
-            StartCoroutine(profileService.GetProfile(OnProfileLoaded));
+        Debug.Log("DashboardManager: Start");
 
-        if (streakService != null)
-            StartCoroutine(streakService.GetStreak());
+        Debug.Log("Запрос профиля...");
+
+        StartCoroutine(
+            services.Profile.GetProfile(OnProfileLoaded));
+
+        Debug.Log("Запрос streak...");
+
+        StartCoroutine(
+            services.Streak.GetStreak(OnStreakLoaded));
     }
 
     private void OnProfileLoaded(UserProfileResponse profile)
     {
-        welcomeText.text = "User: " + profile.username;
-        PlayerModel.Instance.UpdatePlayerData(profile.xp, profile.level, profile.streak);
+        Debug.Log(
+            $"Profile Loaded: {profile.username} XP={profile.xp}");
+
+        welcomeText.text =
+            "User: " + profile.username;
+
+        PlayerModel.Instance.UpdatePlayerData(
+            profile.xp,
+            profile.level,
+            profile.streak);
     }
 
-    private void UpdateUI(int xp, int level, int streak)
+    private void OnStreakLoaded(int streak)
     {
-        xpText.text = "XP: " + xp;
-        levelText.text = "Level: " + level;
-        streakText.text = "Streak: " + streak;
+        Debug.Log(
+            $"Streak Loaded: {streak}");
     }
 
-    public void AddXP(int amount)
+    private void UpdateUI(
+        int xp,
+        int level,
+        int streak)
     {
-        if (xpService != null)
-            StartCoroutine(xpService.AddXP(amount));
-    }
+        Debug.Log(
+            $"UpdateUI XP={xp} Level={level} Streak={streak}");
 
+        xpText.text =
+            " " + xp;
+
+        levelText.text =
+            "Level: " + level;
+
+        streakText.text =
+            "Streak: " + streak;
+    }
     public void BackToMenu()
     {
         SceneManager.LoadScene("Main_Menu");

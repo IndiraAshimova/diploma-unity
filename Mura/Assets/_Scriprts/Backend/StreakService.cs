@@ -1,28 +1,26 @@
-using UnityEngine;
-using UnityEngine.Networking;
 using System.Collections;
 
-public class StreakService : MonoBehaviour
+public class StreakService : BaseApiService
 {
-    private string streakUrl = APIConfig.STREAK;
-
-    // Получаем streak с сервера и обновляем PlayerModel
-    public IEnumerator GetStreak(System.Action<int> onSuccess = null)
+    public StreakService(APIConfig config)
+        : base(config)
     {
-        UnityWebRequest request = UnityWebRequest.Get(streakUrl);
-        request.SetRequestHeader("Authorization", "Bearer " + PlayerPrefs.GetString("jwt_token"));
+    }
 
-        yield return request.SendWebRequest();
+    public IEnumerator GetStreak(
+        System.Action<int> onSuccess = null)
+    {
+        yield return SendGetRequest(
+            config.Streak,
+            (json) =>
+            {
+                int streak =
+                    int.Parse(json);
 
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            int streak = int.Parse(request.downloadHandler.text);
-            PlayerModel.Instance.UpdateStreak(streak);
-            onSuccess?.Invoke(streak);
-        }
-        else
-        {
-            Debug.LogError("Streak Error: " + request.error);
-        }
+                PlayerModel.Instance
+                    .UpdateStreak(streak);
+
+                onSuccess?.Invoke(streak);
+            });
     }
 }

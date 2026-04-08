@@ -1,8 +1,6 @@
-using System.Collections;
-using UnityEngine;
-using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine;
 
 public class AuthManager : MonoBehaviour
 {
@@ -18,8 +16,16 @@ public class AuthManager : MonoBehaviour
     public GameObject loginPanel;
     public GameObject registerPanel;
 
-    [Header("TMP Text for feedback (optional)")]
+    [Header("TMP Text for feedback")]
     public TMP_Text feedbackText;
+
+    private ServiceFactory services;
+
+    private void Awake()
+    {
+        services =
+            new ServiceFactory();
+    }
 
     public void ShowLogin()
     {
@@ -35,82 +41,75 @@ public class AuthManager : MonoBehaviour
 
     public void OnRegisterButton()
     {
-        string email = emailInputR.text;
-        string username = usernameInputR.text;
-        string password = passwordInputR.text;
+        RegisterData data =
+            new RegisterData
+            {
+                email = emailInputR.text,
+                username = usernameInputR.text,
+                password = passwordInputR.text
+            };
 
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+        if (string.IsNullOrEmpty(data.email) ||
+            string.IsNullOrEmpty(data.username) ||
+            string.IsNullOrEmpty(data.password))
         {
-            feedbackText.text = "Заполните все поля";
+            feedbackText.text =
+                "Заполните все поля";
+
             return;
         }
 
-        StartCoroutine(RegisterCoroutine(email, username, password));
+        StartCoroutine(
+            services.Auth.Register(
+                data,
+                OnRegisterResult));
     }
 
-    private IEnumerator RegisterCoroutine(string email, string username, string password)
+    private void OnRegisterResult(bool success)
     {
-        RegisterData data = new RegisterData { email = email, username = username, password = password };
-        string jsonData = JsonUtility.ToJson(data);
-
-        UnityWebRequest request = new UnityWebRequest(APIConfig.AUTH + "/register", "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        yield return request.SendWebRequest();
-
-        if (request.result != UnityWebRequest.Result.Success)
+        if (success)
         {
-            Debug.Log("Register Error: " + request.error);
-            feedbackText.text = "Ошибка регистрации: " + request.error;
+            feedbackText.text =
+                "Пользователь зарегистрирован!";
         }
         else
         {
-            Debug.Log("Registered: " + request.downloadHandler.text);
-            feedbackText.text = "Пользователь зарегистрирован!";
+            feedbackText.text =
+                "Ошибка регистрации";
         }
     }
 
     public void OnLoginButton()
     {
-        string email = emailInput.text;
-        string password = passwordInput.text;
+        LoginData data =
+            new LoginData
+            {
+                email = emailInput.text,
+                password = passwordInput.text
+            };
 
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        if (string.IsNullOrEmpty(data.email) ||
+            string.IsNullOrEmpty(data.password))
         {
-            feedbackText.text = "Заполните email и пароль";
+            feedbackText.text =
+                "Заполните email и пароль";
+
             return;
         }
 
-        StartCoroutine(LoginCoroutine(email, password));
+        StartCoroutine(
+            services.Auth.Login(
+                data,
+                OnLoginSuccess));
     }
 
-    private IEnumerator LoginCoroutine(string email, string password)
+    private void OnLoginSuccess(
+        LoginResponse response)
     {
-        LoginData data = new LoginData { email = email, password = password };
-        string jsonData = JsonUtility.ToJson(data);
+        feedbackText.text =
+            "Вход успешен!";
 
-        UnityWebRequest request = new UnityWebRequest(APIConfig.AUTH + "/login", "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        yield return request.SendWebRequest();
-
-        if (request.result != UnityWebRequest.Result.Success)
-        {
-            Debug.Log("Login Error: " + request.error);
-            feedbackText.text = "Ошибка входа: " + request.error;
-        }
-        else
-        {
-            LoginResponse response = JsonUtility.FromJson<LoginResponse>(request.downloadHandler.text);
-            PlayerPrefs.SetString("jwt_token", response.token);
-            feedbackText.text = "Вход успешен!";
-            SceneManager.LoadScene("Main_Menu");
-        }
+        SceneManager.LoadScene(
+            "Main_Menu");
     }
 }

@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class LessonButtonData : MonoBehaviour
 {
@@ -15,6 +14,9 @@ public class LessonButtonData : MonoBehaviour
 
     private LessonSO lessonData;
 
+    // Событие выбора урока
+    public System.Action<LessonSO> OnLessonSelected;
+
     public RectTransform Rect
     {
         get
@@ -26,28 +28,33 @@ public class LessonButtonData : MonoBehaviour
     public void Setup(LessonSO data)
     {
         lessonData = data;
-        lessonNameText.text = data.LessonName;
+
+        lessonNameText.text =
+            lessonData.LessonName;
 
         UpdateProgressUI();
     }
 
-    public void LoadLesson()
+    public void OnClick()
     {
-        LessonContext.CurrentLesson = lessonData;
-
-        SceneManager.LoadScene(
-            lessonData.sceneName);
+        // Только уведомляем
+        OnLessonSelected?.Invoke(lessonData);
     }
 
     private void UpdateProgressUI()
     {
         var progress =
             LessonProgressManager.Instance
-                .GetLessonProgress(lessonData.lessonIndex);
+                .GetLessonProgress(
+                    lessonData.lessonIndex);
 
-        bool completed = progress.completed;
+        bool completed =
+            progress.completed;
 
-        completedIcon.sprite = completed ? completedSprite : notCompletedSprite;
+        completedIcon.sprite =
+            completed
+                ? completedSprite
+                : notCompletedSprite;
     }
 
     private void OnEnable()
