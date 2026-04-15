@@ -73,6 +73,9 @@ public class DialogueManager : MonoBehaviour
 
     private Coroutine typingCoroutine;
 
+    [Header("Keyword Highlight")]
+    public Color keywordColor = Color.yellow;
+
     // Скорость печати
     public float typingSpeed = 0.03f;
 
@@ -233,11 +236,12 @@ public class DialogueManager : MonoBehaviour
         }
 
         // Печать текста
-        foreach (char letter in line.sentence.ToCharArray())
+        string finalText = HighlightMarkedWords(line.sentence);
+        foreach (char letter in finalText.ToCharArray())
         {
             if (skipTyping)
             {
-                targetText.text = line.sentence;
+                targetText.text = finalText;
                 break;
             }
 
@@ -250,7 +254,33 @@ public class DialogueManager : MonoBehaviour
         skipTyping = false;
         typingCoroutine = null;
     }
+    string HighlightMarkedWords(string text)
+    {
+        string hexColor =
+            ColorUtility.ToHtmlStringRGB(keywordColor);
 
+        while (text.Contains("[") && text.Contains("]"))
+        {
+            int start = text.IndexOf("[");
+            int end = text.IndexOf("]");
+
+            if (start < 0 || end < 0 || end < start)
+                break;
+
+            string word =
+                text.Substring(start + 1, end - start - 1);
+
+            string coloredWord =
+                $"<color=#{hexColor}>{word}</color>";
+
+            text =
+                text.Substring(0, start)
+                + coloredWord
+                + text.Substring(end + 1);
+        }
+
+        return text;
+    }
     void UpdateCharacter(DialogueLine line)
     {
         if (line.characterSprite == null)

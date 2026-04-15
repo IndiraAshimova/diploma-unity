@@ -12,7 +12,8 @@ public class MainMenuManager : MonoBehaviour
 
     [Header("Panels")]
     [SerializeField] private GameObject lessonsPanel;
-    [SerializeField] private GameObject categoryPanel;
+    [SerializeField] private GameObject categoryPanel;    
+    [SerializeField] private GameObject settingsPanel;
 
     [Header("UI Manager")]
     [SerializeField] private UIMainMenuManager uiManager;
@@ -70,13 +71,23 @@ public class MainMenuManager : MonoBehaviour
         lessonsPanel.SetActive(true);
         uiManager.ShowCategory(category);
     }
+    public void OpenSettings()
+    {
+        settingsPanel.SetActive(true);
+    }
+
 
     public void OpenBeginner() => OpenCategory(Category.Beginner);
     public void OpenTeen() => OpenCategory(Category.Teen);
     public void OpenAdvanced() => OpenCategory(Category.Advanced);
 
-    public void BackToMainMenu() => CloseCategory();
-    private void CloseCategory() => categoryPanel.SetActive(false);
+    public void BackToMainMenu()
+    {
+        CloseCategory();
+        CloseSettings();
+    }
+    private void CloseCategory() => categoryPanel.SetActive(false);    
+    private void CloseSettings() => settingsPanel.SetActive(false);
 
     public void LoadLessonScene(string sceneName)
     {

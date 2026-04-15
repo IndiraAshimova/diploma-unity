@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e51c2955335b6c8448e0c770d304ab62, type: 3}
+  m_Name: 5.5.5
+  m_EditorClassIdentifier: 
+  lessonName: " \"\u0410\u049B\u0441\u0430\u049B \u049B\u04B1\u043B\u0430\u043D\"
+    \u0430\u04A3\u044B\u0437\u044B"
+  category: 0
+  lessonIndex: 5
+  sceneName: Ak-Sak
+  winScore: 50
+  partialScore: 25
+  lessonQuestions:
+  - {fileID: 11400000, guid: 4b6b0c9bf6a68844db37e88a00e1ea27, type: 2}
+  - {fileID: 11400000, guid: 796fd4cea17ee824d85432386d9fea1b, type: 2}
+  - {fileID: 11400000, guid: 2c89af6b3a7e3ba42ac24ee999b2cb76, type: 2}
+  - {fileID: 11400000, guid: 1b5c4beb00f0d2748b0ead5bf8cbc83d, type: 2}
+  - {fileID: 11400000, guid: 4d04971073a35064cab8e22f0474311f, type: 2}

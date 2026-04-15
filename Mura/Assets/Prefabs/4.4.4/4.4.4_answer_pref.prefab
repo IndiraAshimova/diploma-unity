@@ -286,7 +286,7 @@ MonoBehaviour:
   infoTextObject: {fileID: 1829593681646523625}
   toggle: {fileID: 1636153925499690664}
   uncheckedToggle: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  checkedToggle: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  checkedToggle: {fileID: 21300000, guid: 3224068c26058bb46b44a98fc2460157, type: 3}
   events: {fileID: 11400000, guid: ab768f8d5f360a14bb986e47df297410, type: 2}
 --- !u!1 &7398298702726150313
 GameObject:

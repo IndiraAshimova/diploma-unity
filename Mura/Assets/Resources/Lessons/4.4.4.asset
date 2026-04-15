@@ -16,7 +16,11 @@ MonoBehaviour:
   category: 1
   lessonIndex: 4
   sceneName: Bayan_sulu
-  winScore: 50
-  partialScore: 25
+  winScore: 40
+  partialScore: 20
   lessonQuestions:
   - {fileID: 11400000, guid: ec68c246542685d4a882987d78db9fd7, type: 2}
+  - {fileID: 11400000, guid: b803fc198c77b7446972f117bfe9ccfa, type: 2}
+  - {fileID: 11400000, guid: 7fcdecc33f84e6447b965e1b3ddda13e, type: 2}
+  - {fileID: 11400000, guid: 125d1154cabe4c34a9b3de57b59fd453, type: 2}
+  - {fileID: 11400000, guid: d3276a464a2ce3d4bb8aa351368b24af, type: 2}

@@ -44,4 +44,31 @@ public class YurtButtons : MonoBehaviour
                 lessonSO  
             );
     }
+
+    public void RestartLesson()
+    {
+        if (resetScoreOnStart)
+        {
+            FindFirstObjectByType<LevelScoreManager>()
+                ?.ResetScore();
+        }
+
+        List<ILessonStep> steps =
+            new List<ILessonStep>();
+
+        foreach (var obj in stepObjects)
+        {
+            if (obj is ILessonStep step)
+                steps.Add(step);
+        }
+
+        if (finishStep != null)
+            steps.Add(finishStep);
+
+        LessonFlowManager.Instance
+            .StartLessonForce(
+                steps,
+                lessonSO
+            );
+    }
 }

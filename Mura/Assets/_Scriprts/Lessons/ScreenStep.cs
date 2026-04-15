@@ -1,11 +1,16 @@
+using System;
 using UnityEngine;
 
 public class ScreenStep : MonoBehaviour, ILessonStep
 {
+    [Header("Screens")]
     public GameObject screenToShow;
     public GameObject screenToHide;
 
-    public void Execute(System.Action onComplete)
+    [Header("Optional Music")]
+    [SerializeField] private AudioClip music;
+
+    public void Execute(Action onComplete)
     {
         if (screenToHide != null)
             screenToHide.SetActive(false);
@@ -16,6 +21,12 @@ public class ScreenStep : MonoBehaviour, ILessonStep
             screenToShow.SetActive(true);
         else
             Debug.LogWarning("ScreenStep: screenToShow не назначен!");
+
+        // музыка (если назначена)
+        if (music != null)
+        {
+            SoundManager.Instance.PlayMusic(music);
+        }
 
         onComplete?.Invoke();
     }

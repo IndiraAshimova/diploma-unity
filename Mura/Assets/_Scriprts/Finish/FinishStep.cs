@@ -73,7 +73,7 @@ public class FinishStep : MonoBehaviour, ILessonStep
 
         if (restartYurt != null)
         {
-            restartYurt.OnClickYurt();
+            restartYurt.RestartLesson();
         }
         else
         {
