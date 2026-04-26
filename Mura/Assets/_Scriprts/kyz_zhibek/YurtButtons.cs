@@ -12,6 +12,7 @@ public class YurtButtons : MonoBehaviour
     [Header("Lesson")]
     [SerializeField]
     private LessonSO lessonSO;
+    public LessonSO LessonSO => lessonSO;
 
     [Header("Score Settings")]
     [SerializeField]

@@ -18,8 +18,26 @@ MonoBehaviour:
   m_PlatformId: 4e3c793746204150860bf175a9a41a05
   m_PlatformBuildProfile:
     rid: 5473321864824094831
-  m_OverrideGlobalSceneList: 0
-  m_Scenes: []
+  m_OverrideGlobalSceneList: 1
+  m_Scenes:
+  - m_enabled: 1
+    m_path: Assets/Scenes/SampleScene.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Main_Menu.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Dashboard.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Lessons/Bayan_sulu.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Lessons/Ak-Sak.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Lessons/Er-Tostik.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Lessons/Girl_Zhibek_and_Tolegen.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Lessons/Oyan_Kazakh.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Lessons/Zar_Zaman.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings: []

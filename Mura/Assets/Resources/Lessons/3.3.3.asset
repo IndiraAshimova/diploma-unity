@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e51c2955335b6c8448e0c770d304ab62, type: 3}
   m_Name: 3.3.3
   m_EditorClassIdentifier: 
-  lessonName: Oyan_Kazakh
+  lessonName: "\u041E\u044F\u043D, \u049A\u0430\u0437\u0430\u049B!"
   category: 2
   lessonIndex: 3
   sceneName: Oyan_Kazakh

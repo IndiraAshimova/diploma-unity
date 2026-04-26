@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e51c2955335b6c8448e0c770d304ab62, type: 3}
   m_Name: 1.1.1
   m_EditorClassIdentifier: 
-  lessonName: Er-Tostik
+  lessonName: "\u0415\u0440 \u0422\u04E9\u0441\u0442\u0456\u043A"
   category: 0
   lessonIndex: 0
   sceneName: Er-Tostik
-  winScore: 30
+  winScore: 40
   partialScore: 20
   lessonQuestions:
   - {fileID: 11400000, guid: a54690e837c1d274cb1364ba929dcbbc, type: 2}

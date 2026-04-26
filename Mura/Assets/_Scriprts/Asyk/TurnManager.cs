@@ -1,72 +1,96 @@
 using UnityEngine;
+using System.Collections;
+
+public enum TurnOwner
+{
+    Player,
+    Bot
+}
 
 public class TurnManager : MonoBehaviour
 {
-    public static TurnManager Instance;
+    public ThrowController playerThrow;
+    public ThrowController botThrow;
+    public BotController bot;
 
-    public AsykThrowController playerThrow;
-    public BotThrowController botThrow;
-    public TossAsyk tossAsyk;
+    public TurnOwner currentTurn = TurnOwner.Player;
 
-    private bool isPlayerTurn = true;
-
-    void Awake()
-    {
-        Instance = this;
-    }
+    private bool turnLocked;
 
     void Start()
     {
-        tossAsyk.Toss();
-        DecideFirstTurn();
+        currentTurn = TurnOwner.Player;
+        Debug.Log("[TURN] START ? Player");
         StartTurn();
     }
 
-    void DecideFirstTurn()
+    public bool IsPlayerTurn()
     {
-        if (tossAsyk.tossResult == AsykPosition.Alshy ||
-            tossAsyk.tossResult == AsykPosition.Taike)
-            isPlayerTurn = true;
-        else
-            isPlayerTurn = false;
+        return currentTurn == TurnOwner.Player && !turnLocked;
+    }
 
-        Debug.Log(isPlayerTurn ? "Игрок ходит первым" : "Бот ходит первым");
+    public bool IsLocked()
+    {
+        return turnLocked;
+    }
+
+    public void NextTurn(bool hit)
+    {
+        Debug.Log($"[TURN] NextTurn | hit = {hit} | current = {currentTurn}");
+
+        if (hit)
+        {
+            Debug.Log("[TURN] HIT ? SAME PLAYER");
+            StartTurn();
+            return;
+        }
+
+        currentTurn = (currentTurn == TurnOwner.Player)
+            ? TurnOwner.Bot
+            : TurnOwner.Player;
+
+        Debug.Log("[TURN] SWITCH ? " + currentTurn);
+
+        StartTurn();
     }
 
     void StartTurn()
     {
-        playerThrow.gameObject.SetActive(isPlayerTurn);
-        botThrow.gameObject.SetActive(!isPlayerTurn);
+        StopAllCoroutines();
+        turnLocked = true;
 
-        if (isPlayerTurn)
+        Debug.Log("[TURN] Start ? " + currentTurn);
+
+        if (currentTurn == TurnOwner.Bot)
         {
-            playerThrow.gameObject.SetActive(true);
-            playerThrow.ResetThrow(); // сброс UI и состояния
-
-            // Включаем и сбрасываем стрелку игрока
-            playerThrow.arrow.ResetArrow();
-            playerThrow.arrow.gameObject.SetActive(true);
+            StartCoroutine(BotTurn());
         }
         else
         {
-            botThrow.gameObject.SetActive(true);
-            botThrow.StartBotTurn();
-
-            // Скрываем стрелку бота
-            botThrow.arrow.gameObject.SetActive(false);
+            StartCoroutine(PlayerTurn());
         }
     }
 
-    // Передача хода
-    public void EndTurn()
+    IEnumerator PlayerTurn()
     {
-        isPlayerTurn = !isPlayerTurn;
-        StartTurn();
+        yield return null;
+        turnLocked = false;
+
+        Debug.Log("[TURN] PLAYER READY");
     }
 
-    // Проверка, чей сейчас ход
-    public bool IsPlayerTurn()
+    IEnumerator BotTurn()
     {
-        return isPlayerTurn;
+        yield return new WaitForSeconds(1f);
+
+        Debug.Log("[BOT] MAKE TURN");
+        bot.MakeTurn();
+
+        turnLocked = false;
+    }
+
+    public ThrowController GetActiveThrower()
+    {
+        return currentTurn == TurnOwner.Player ? playerThrow : botThrow;
     }
 }

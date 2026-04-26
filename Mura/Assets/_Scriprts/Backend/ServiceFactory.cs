@@ -11,7 +11,7 @@ public class ServiceFactory
     {
         config =
             new APIConfig(
-                "https://diploma-server-0x25.onrender.com/api");
+                "https://diploma-server-xnr4.onrender.com/api");
 
         Profile =
             new ProfileService(config);

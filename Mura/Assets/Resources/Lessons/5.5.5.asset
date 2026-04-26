@@ -17,8 +17,8 @@ MonoBehaviour:
   category: 0
   lessonIndex: 5
   sceneName: Ak-Sak
-  winScore: 50
-  partialScore: 25
+  winScore: 40
+  partialScore: 20
   lessonQuestions:
   - {fileID: 11400000, guid: 4b6b0c9bf6a68844db37e88a00e1ea27, type: 2}
   - {fileID: 11400000, guid: 796fd4cea17ee824d85432386d9fea1b, type: 2}

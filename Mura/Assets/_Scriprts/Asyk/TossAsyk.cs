@@ -10,14 +10,14 @@ public enum AsykPosition
 
 public class TossAsyk : MonoBehaviour
 {
-    public AsykPosition tossResult; // результат жребия хранится здесь
-
-    // Симулируем случайное выпадение
-    public void Toss()
+    public AsykPosition Toss()
     {
         int roll = Random.Range(0, 4);
-        tossResult = (AsykPosition)roll;
+        AsykPosition result =
+            (AsykPosition)roll;
 
-        Debug.Log("Выпал асик: " + tossResult);
+        Debug.Log("Выпал асык: " + result);
+
+        return result;
     }
 }

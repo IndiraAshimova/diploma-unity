@@ -1,49 +1,156 @@
-using UnityEngine;
-using UnityEngine.UI;
+//using System.Collections;
+//using TMPro;
+//using UnityEngine;
+//using UnityEngine.UI;
 
-public class TossAsykUI : MonoBehaviour
-{
-    public TossAsyk tossAsyk;       // ссылка на объект TossAsyk
-    public Image resultImage;       // изображение для показа результата
-    public Button tossButton;       // кнопка для броска
+//public class TossAsykUI : MonoBehaviour
+//{
+//    [Header("Logic")]
+//    public TossAsyk toss;
 
-    [Header("Sprites for each position")]
-    public Sprite alshySprite;
-    public Sprite taikeSprite;
-    public Sprite bukSprite;
-    public Sprite shigeSprite;
+//    [Header("UI")]
+//    public Image playerImage;
+//    public Image botImage;
+//    public Button tossButton;
+//    public TextMeshProUGUI infoText;
 
-    void Start()
-    {
-        tossButton.onClick.AddListener(OnTossButtonClicked);
+//    [Header("Sprites")]
+//    public Sprite alshySprite;
+//    public Sprite taikeSprite;
+//    public Sprite bukSprite;
+//    public Sprite shigeSprite;
 
-        // Очистим изображение в начале
-        resultImage.sprite = null;
-        resultImage.enabled = false;
-    }
+//    [Header("Animation")]
+//    public float animationTime = 2f;
+//    public float changeInterval = 0.1f;
 
-    void OnTossButtonClicked()
-    {
-        // Бросаем асык
-        tossAsyk.Toss();
+//    void Start()
+//    {
+//        tossButton.onClick.AddListener(StartToss);
 
-        // Показываем спрайт в зависимости от результата
-        switch (tossAsyk.tossResult)
-        {
-            case AsykPosition.Alshy:
-                resultImage.sprite = alshySprite;
-                break;
-            case AsykPosition.Taike:
-                resultImage.sprite = taikeSprite;
-                break;
-            case AsykPosition.Buk:
-                resultImage.sprite = bukSprite;
-                break;
-            case AsykPosition.Shige:
-                resultImage.sprite = shigeSprite;
-                break;
-        }
+//        playerImage.enabled = false;
+//        botImage.enabled = false;
+//    }
 
-        resultImage.enabled = true;
-    }
-}
+//    void StartToss()
+//    {
+//        tossButton.interactable = false;
+
+//        StartCoroutine(TossRoutine());
+//    }
+
+//    IEnumerator TossRoutine()
+//    {
+//        bool repeat = true;
+
+//        while (repeat)
+//        {
+//            yield return StartCoroutine(
+//                PlayAnimation()
+//            );
+
+//            AsykPosition playerResult =
+//                toss.Toss();
+
+//            AsykPosition botResult =
+//                toss.Toss();
+
+//            SetFinalSprite(
+//                playerImage,
+//                playerResult
+//            );
+
+//            SetFinalSprite(
+//                botImage,
+//                botResult
+//            );
+
+//            repeat =
+//                resolver.IsSame(
+//                    playerResult,
+//                    botResult
+//                );
+
+//            if (repeat)
+//            {
+//                infoText.text =
+//                    "Одинаковые асыки! Переброс!";
+
+//                yield return new WaitForSeconds(1f);
+//            }
+//            else
+//            {
+//                PlayerType first =
+//                    resolver.DecideFirst(
+//                        playerResult,
+//                        botResult
+//                    );
+
+//                TurnManager.Instance
+//                    .SetFirstTurn(first);
+
+//                infoText.text = "";
+//            }
+//        }
+//    }
+
+//    IEnumerator PlayAnimation()
+//    {
+//        float timer = 0f;
+
+//        while (timer < animationTime)
+//        {
+//            SetRandomSprite(playerImage);
+//            SetRandomSprite(botImage);
+
+//            yield return new WaitForSeconds(
+//                changeInterval
+//            );
+
+//            timer += changeInterval;
+//        }
+//    }
+
+//    void SetRandomSprite(Image img)
+//    {
+//        int rand = Random.Range(0, 4);
+
+//        SetSprite(
+//            img,
+//            (AsykPosition)rand
+//        );
+//    }
+
+//    void SetFinalSprite(
+//        Image img,
+//        AsykPosition result)
+//    {
+//        SetSprite(img, result);
+//    }
+
+//    void SetSprite(
+//        Image img,
+//        AsykPosition pos)
+//    {
+//        img.enabled = true;
+
+//        switch (pos)
+//        {
+//            case AsykPosition.Alshy:
+//                img.sprite = alshySprite;
+//                break;
+
+//            case AsykPosition.Taike:
+//                img.sprite = taikeSprite;
+//                break;
+
+//            case AsykPosition.Buk:
+//                img.sprite = bukSprite;
+//                break;
+
+//            case AsykPosition.Shige:
+//                img.sprite = shigeSprite;
+//                break;
+//        }
+//    }
+//}

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e51c2955335b6c8448e0c770d304ab62, type: 3}
+  m_Name: 6.6.6
+  m_EditorClassIdentifier: 
+  lessonName: "\u0417\u0430\u0440 \u0437\u0430\u043C\u0430\u043D"
+  category: 2
+  lessonIndex: 8
+  sceneName: Zar_Zaman
+  winScore: 40
+  partialScore: 20
+  lessonQuestions:
+  - {fileID: 11400000, guid: 4572c5bc2af669349950501407ad280b, type: 2}
+  - {fileID: 11400000, guid: 65dc7096bc0dce1499a5c2b8bee457e8, type: 2}
+  - {fileID: 11400000, guid: a04b1d1e59662a346ad68516e1e247db, type: 2}
+  - {fileID: 11400000, guid: 0f14cb67fd5f4d540901fd7a11f5b5ad, type: 2}
+  - {fileID: 11400000, guid: 56ce750f380c8bb40945ce490a483703, type: 2}

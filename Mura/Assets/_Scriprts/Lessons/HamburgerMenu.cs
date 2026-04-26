@@ -1,124 +1,114 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[System.Serializable]
-public class HamburgerMenuItem
-{
-    public string title;
-
-    [Header("Lesson")]
-    public LessonSO lessonSO;
-
-    [Header("Источник шагов (Юрта)")]
-    public YurtButtons yurtSource;
-
-    [Header("С какого шага начать")]
-    public MonoBehaviour startStep;
-
-    [Header("Выход в меню")]
-    public bool isExit;
-}
-
 public class HamburgerMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject menuPanel;
-    [SerializeField] private HamburgerMenuButton buttonPrefab;
-    [SerializeField] private List<HamburgerMenuItem> menuItems = new List<HamburgerMenuItem>();
+    [Header("UI")]
+    [SerializeField]
+    private GameObject menuPanel;
 
-    private List<ICancelableStep> currentlyRunningSteps = new List<ICancelableStep>();
+    [Header("Buttons")]
+    [SerializeField]
+    private HamburgerMenuButton resumeButton;
+
+    //[SerializeField]
+    //private HamburgerMenuButton restartButton;
+
+    [SerializeField]
+    private HamburgerMenuButton exitButton;
+
+    [Header("Map")]
+    [SerializeField]
+    private GameObject mapPanel;
+
+
+    private YurtButtons currentLessonYurt;
+
 
     private void Start()
     {
         menuPanel.SetActive(false);
 
-        foreach (var item in menuItems)
-        {
-            var buttonObj = Instantiate(buttonPrefab, menuPanel.transform);
+        resumeButton.Setup(
+            "Resume",
+            ResumeLesson
+        );
 
-            if (item.isExit)
-            {
-                buttonObj.Setup(item.title, () => ExitToMainMenu("Main_Menu"));
-            }
-            else
-            {
-                buttonObj.Setup(item.title, () => RunMenuItem(item));
-            }
-        }
+
+        exitButton.Setup(
+            "Exit",
+            ExitToMainMenu
+        );
     }
+
+
+    // ВАЖНО: вызывать при старте урока
+    public void SetCurrentLesson(
+        YurtButtons yurt)
+    {
+        currentLessonYurt = yurt;
+    }
+
 
     public void ToggleMenu()
     {
-        menuPanel.SetActive(!menuPanel.activeSelf);
+        menuPanel.SetActive(
+            !menuPanel.activeSelf
+        );
     }
 
-    private void RunMenuItem(HamburgerMenuItem item)
+
+    private void ResumeLesson()
     {
-        Debug.Log("[Hamburger] Запуск пункта: " + item.title);
+        menuPanel.SetActive(false);
+    }
 
-        // 1. Отменяем старые шаги
-        foreach (var step in currentlyRunningSteps)
-            step.CancelStep();
 
-        currentlyRunningSteps.Clear();
+    private void RestartLesson()
+    {
+        Debug.Log(
+            "[Hamburger] Restart lesson"
+        );
 
-        // 2. Сбрасываем только временные очки текущей сессии
-        FindFirstObjectByType<LevelScoreManager>()?.ResetSessionScore();
-
-        // 3. Прогресс урока НЕ обнуляем
-        // LessonFlowManager.Instance.Progress = new LessonProgress(); // ? оставляем старый
-
-        // 4. Собираем шаги для запуска
-        List<ILessonStep> stepsList = new List<ILessonStep>();
-
-        if (item.yurtSource != null)
+        if (currentLessonYurt != null)
         {
-            bool startAdding = item.startStep == null;
-
-            foreach (var obj in item.yurtSource.stepObjects)
-            {
-                if (obj is ILessonStep step)
-                {
-                    if (!startAdding && obj == item.startStep)
-                        startAdding = true;
-
-                    if (startAdding)
-                    {
-                        stepsList.Add(step);
-
-                        if (step is ICancelableStep cancelable)
-                            currentlyRunningSteps.Add(cancelable);
-                    }
-                }
-            }
-
-            // добавляем финал
-            if (item.yurtSource.finishStep != null)
-                stepsList.Add(item.yurtSource.finishStep);
+            currentLessonYurt
+                .RestartLesson();
         }
         else
         {
-            Debug.LogWarning("[Hamburger] У пункта нет yurtSource!");
+            Debug.LogWarning(
+                "[Hamburger] No lesson set!"
+            );
         }
-
-        if (stepsList.Count == 0)
-        {
-            Debug.LogError("[Hamburger] Нет шагов для запуска!");
-            return;
-        }
-
-        // 5. Передаём LessonSO в FlowManager
-        LessonFlowManager.Instance.StartLessonForce(
-            stepsList,
-            item.lessonSO,
-            false
-        );
 
         menuPanel.SetActive(false);
     }
 
-    private void ExitToMainMenu(string sceneName)
+
+    private void OpenMap()
     {
-        SceneManager.LoadScene(sceneName);
+        Debug.Log(
+            "[Hamburger] Open map"
+        );
+
+        if (mapPanel != null)
+        {
+            mapPanel.SetActive(true);
+        }
+
+        menuPanel.SetActive(false);
+    }
+
+
+    private void ExitToMainMenu()
+    {
+        Debug.Log(
+            "[Hamburger] Exit to main menu"
+        );
+
+        SceneManager.LoadScene(
+            "Main_Menu"
+        );
     }
 }

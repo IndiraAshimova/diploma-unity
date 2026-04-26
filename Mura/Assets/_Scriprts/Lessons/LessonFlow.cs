@@ -10,7 +10,7 @@ public class LessonFlowManager : MonoBehaviour
     private Queue<ILessonStep> steps = new Queue<ILessonStep>();
     private bool isRunning = false;
 
-    // ? здесь хранится текущий урок
+    // здесь хранится текущий урок
     public LessonSO CurrentLessonSO { get; private set; }
 
     private void Awake()
@@ -29,7 +29,6 @@ public class LessonFlowManager : MonoBehaviour
             Debug.Log("[LessonFlow] Уже выполняется урок!");
             return;
         }
-
         CurrentLessonSO = lessonSO;
 
         steps.Clear();

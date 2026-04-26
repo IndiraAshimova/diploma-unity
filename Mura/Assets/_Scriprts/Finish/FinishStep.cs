@@ -8,7 +8,7 @@ public class FinishStep : MonoBehaviour, ILessonStep
     public GameObject finishRoot;
     public LevelScoreManager levelScore;
 
-    public string nextScene = "Main_Map";
+    public string nextScene = "Main_Menu";
 
     public LessonSO lesson;
     [SerializeField]
